@@ -54,12 +54,16 @@ class statusLine {
    * This currently only accepts HTTP/1.0 and HTTP/1.1 status lines, all others
    * will be rejected.
    */
-  statusLine(const std::string &line) : statusLine() {
+  statusLine(const std::string &line) : statusLine(line.cbegin(), line.cend()) {
+  }
+
+  template <typename BiDirIt>
+  statusLine(BiDirIt begin, BiDirIt end) : statusLine() {
     static const std::regex stat(grammar::httpVersion + " (" +
                                  grammar::statusCode + ") (" +
                                  grammar::reasonPhrase + ")\r?\n?");
     std::smatch matches;
-    bool matched = std::regex_match(line, matches, stat);
+    bool matched = std::regex_match(begin, end, matches, stat);
 
     if (matched) {
       const std::string maj = matches[1];
@@ -137,8 +141,8 @@ class statusLine {
    *
    * @return A text description, which can be sent with your HTTP request.
    */
-  static std::string getDescription(unsigned status) {
-    auto it = http::status.find(status);
+  static std::string getDescription(unsigned _status) {
+    auto it = http::status.find(_status);
     if (it != http::status.end()) {
       return it->second;
     }

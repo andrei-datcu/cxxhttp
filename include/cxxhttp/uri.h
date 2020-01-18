@@ -161,7 +161,7 @@ class uri {
         if (haveFirst) {
           isEncoded = false;
           haveFirst = false;
-          rv.push_back((decode(first, isValid) << 4) | decode(c, isValid));
+          rv.push_back(static_cast<char>((decode(first, isValid) << 4) | decode(c, isValid)));
         } else {
           haveFirst = true;
           first = c;

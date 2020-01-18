@@ -25,8 +25,7 @@ namespace cxxhttp {
  * A simple functor used by the attribute map to compare strings without
  * caring for the letter case.
  */
-class caseInsensitiveLT
-    : private std::binary_function<std::string, std::string, bool> {
+class caseInsensitiveLT {
  public:
   /* Case-insensitive string comparison
    * @a The first of the two strings to compare.

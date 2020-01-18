@@ -105,6 +105,11 @@ class parser {
    * @return 'true' if the line was successfully parsed as a header.
    */
   bool absorb(const std::string &line) {
+    return absorb(line.cbegin(), line.cend());
+  }
+
+  template <typename BiDirIt>
+  bool absorb(BiDirIt begin, BiDirIt end) {
     static const std::string captureName = "(" + grammar::fieldName + ")";
     static const std::string captureValue = "(" + grammar::fieldContent + ")?";
 
@@ -115,21 +120,21 @@ class parser {
                                             grammar::ows + "\r?\n?");
     static const std::regex finalLine("\r?\n?");
 
-    bool matched = std::regex_match(line, finalLine);
+    bool matched = std::regex_match(begin, end, finalLine);
     complete = matched;
 
     if (!complete) {
       std::smatch matches;
 
       matched = !lastHeader.empty() &&
-                std::regex_match(line, matches, headerContinued);
+                std::regex_match(begin, end, matches, headerContinued);
       std::string appendValue;
       bool lws = matched;
 
       if (matched) {
         appendValue = matches[1];
       } else {
-        matched = std::regex_match(line, matches, headerProper);
+        matched = std::regex_match(begin, end, matches, headerProper);
 
         if (matched) {
           lastHeader = matches[1];
